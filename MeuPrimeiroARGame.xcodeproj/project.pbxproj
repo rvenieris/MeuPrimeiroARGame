@@ -36,6 +36,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8C1FD1C8298A24920064054F /* Particles */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Particles;
+			sourceTree = "<group>";
+		};
 		8C9B0ADE2987246800B92763 = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				8C9B0AEA2987246800B92763 /* AppDelegate.swift */,
+				8C1FD1C8298A24920064054F /* Particles */,
 				8C9B0AEC2987246800B92763 /* art.scnassets */,
 				8C9B0AEE2987246800B92763 /* ViewController.swift */,
 				8C9B0AF02987246800B92763 /* Main.storyboard */,
@@ -285,7 +293,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JT55BTWL93;
+				DEVELOPMENT_TEAM = 67AYPRFZH8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -315,7 +323,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JT55BTWL93;
+				DEVELOPMENT_TEAM = 67AYPRFZH8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
