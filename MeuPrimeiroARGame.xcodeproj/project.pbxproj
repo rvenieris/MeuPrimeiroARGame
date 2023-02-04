@@ -9,17 +9,19 @@
 /* Begin PBXBuildFile section */
 		8C9B0AEB2987246800B92763 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9B0AEA2987246800B92763 /* AppDelegate.swift */; };
 		8C9B0AED2987246800B92763 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0AEC2987246800B92763 /* art.scnassets */; };
-		8C9B0AEF2987246800B92763 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9B0AEE2987246800B92763 /* ViewController.swift */; };
+		8C9B0AEF2987246800B92763 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9B0AEE2987246800B92763 /* ARViewController.swift */; };
 		8C9B0AF22987246800B92763 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0AF02987246800B92763 /* Main.storyboard */; };
 		8C9B0AF42987246A00B92763 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0AF32987246A00B92763 /* Assets.xcassets */; };
 		8C9B0AF72987246A00B92763 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0AF52987246A00B92763 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8C536EB6298EBAD7003B7E4E /* SpaceshipEngine.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpaceshipEngine.m4a; sourceTree = "<group>"; };
+		8C536EB7298EBAD7003B7E4E /* WickAndFire.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = WickAndFire.m4a; sourceTree = "<group>"; };
 		8C9B0AE72987246800B92763 /* MeuPrimeiroARGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeuPrimeiroARGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C9B0AEA2987246800B92763 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8C9B0AEC2987246800B92763 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
-		8C9B0AEE2987246800B92763 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		8C9B0AEE2987246800B92763 /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
 		8C9B0AF12987246800B92763 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8C9B0AF32987246A00B92763 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C9B0AF62987246A00B92763 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -36,11 +38,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8C1FD1C8298A24920064054F /* Particles */ = {
+		8C536EB5298EBABB003B7E4E /* SoundEffects */ = {
 			isa = PBXGroup;
 			children = (
+				8C536EB6298EBAD7003B7E4E /* SpaceshipEngine.m4a */,
+				8C536EB7298EBAD7003B7E4E /* WickAndFire.m4a */,
 			);
-			path = Particles;
+			path = SoundEffects;
 			sourceTree = "<group>";
 		};
 		8C9B0ADE2987246800B92763 = {
@@ -63,9 +67,9 @@
 			isa = PBXGroup;
 			children = (
 				8C9B0AEA2987246800B92763 /* AppDelegate.swift */,
-				8C1FD1C8298A24920064054F /* Particles */,
 				8C9B0AEC2987246800B92763 /* art.scnassets */,
-				8C9B0AEE2987246800B92763 /* ViewController.swift */,
+				8C9B0AEE2987246800B92763 /* ARViewController.swift */,
+				8C536EB5298EBABB003B7E4E /* SoundEffects */,
 				8C9B0AF02987246800B92763 /* Main.storyboard */,
 				8C9B0AF32987246A00B92763 /* Assets.xcassets */,
 				8C9B0AF52987246A00B92763 /* LaunchScreen.storyboard */,
@@ -145,7 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C9B0AEF2987246800B92763 /* ViewController.swift in Sources */,
+				8C9B0AEF2987246800B92763 /* ARViewController.swift in Sources */,
 				8C9B0AEB2987246800B92763 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
