@@ -14,11 +14,12 @@ class ARViewController: UIViewController {
     @IBOutlet var sceneView: ARSCNView!
     
         // Create a new empty scene
-    let scene =  SCNScene() //SCNScene(named: "art.scnassets/GameElements.scn")!
+    let scene =  SCNScene()
     
-        // The Ovni where to create other boms coping this one
+        // The Ovni where we can create other Ovnis coping this one
     lazy var masterOvni:SCNNode = {
-        let node = SCNScene(named: "art.scnassets/GameElements.scn")!.rootNode.childNode(withName: "ovni", recursively:true)!
+        let node = SCNScene(named: "art.scnassets/GameElements.scn")!
+                   .rootNode.childNode(withName: "ovni", recursively:true)!
         node.physicsBody?.physicsShape = node.mergeAllChildrenPhysicsShape()
         return node
     }()
@@ -36,7 +37,10 @@ extension ARViewController {
         
             //        setDebugOptionsOn()
         
+        configureLighting()
+        
         addTapGestureToSceneView()
+        
         
     }
     
@@ -66,9 +70,24 @@ extension ARViewController {
             // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
         
+//        configuration.frameSemantics.insert(.personSegmentationWithDepth)
+        configuration.isLightEstimationEnabled = true
+        configuration.environmentTexturing = .automatic
+
+        addAREnvironmentProbeAnchor()
             // Run the view's session
         sceneView.session.run(configuration)
         sceneView.session.delegate = self
+    }
+    
+    func addAREnvironmentProbeAnchor() {
+            // Create the new environment probe anchor with size 15, 15, 15 and add it to the session.
+        let probeAnchor = AREnvironmentProbeAnchor(transform: simd_float4x4([[1.0, 0.0, 0.0, 0.0],
+                                                                             [0.0, 1.0, 0.0, 0.0],
+                                                                             [0.0, 0.0, 1.0, 0.0],
+                                                                             [0.0, 1.0, 0.0, 1.0]]),
+                                                   extent: simd_float3(15, 15, 15))
+        sceneView.session.add(anchor: probeAnchor)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -91,7 +110,7 @@ extension ARViewController {
 }
 
 
-    // Deal Ovni
+    // MARK: - Deal OVNI
 extension ARViewController {
     func addOvni() {
         let node = masterOvni.clone()
@@ -114,6 +133,7 @@ extension ARViewController: ARSessionDelegate {
 
 
 extension SCNNode {
+    
     func mergeAllChildrenPhysicsShape()->SCNPhysicsShape? {
         let myShape = SCNPhysicsShape(geometry: self.geometry ?? SCNGeometry())
         let myTranslation = SCNMatrix4MakeTranslation(0, 0, 0) as NSValue
