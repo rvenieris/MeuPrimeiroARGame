@@ -42,9 +42,16 @@ class ARViewController: UIViewController {
     }()
     
     weak var currentBomb:SCNNode?
-    let wickBurnTime:TimeInterval = 6
-    let rechargeWaitingTime:TimeInterval = 3
+    let wickBurnTime:TimeInterval = 3
+    let rechargeWaitingTime:TimeInterval = 6
     var lastIgniteTime:Date = Date.distantPast
+    
+    var badReadingsCounter = 0 {
+        didSet {
+            if badReadingsCounter > 10 {badReadingsCounter = 10; return}
+            if badReadingsCounter < 0 {badReadingsCounter = 0; return}
+        }
+    }
 
 }
 
@@ -127,30 +134,35 @@ extension ARViewController {
 extension ARViewController {
     
     func updateFocus() {
-        guard -lastIgniteTime.timeIntervalSinceNow > rechargeWaitingTime else {
-            print("recharging", lastIgniteTime.timeIntervalSinceNow)
-            return
-            
-        }
+            // Average using several most recent positions.
+        guard -lastIgniteTime.timeIntervalSinceNow > rechargeWaitingTime else { return }
         
             // Perform ray casting only when ARKit tracking is in a good state.
         guard let camera = sceneView.session.currentFrame?.camera, case .normal = camera.trackingState,
               let query = sceneView.getRaycastQuery(),
-              let result = sceneView.castRay(for: query).first else { return }
+              let result = sceneView.castRay(for: query).first,
+                  camera.trackingState == .normal else {
+            
+                // If lost camera Raycast, remove node
+            guard let bomb = self.currentBomb else {return}
+            badReadingsCounter += 1
+            if badReadingsCounter >= 10 { bomb.removeFromParentNode() }
+            
+            return
+        }
         
-        switch camera.trackingState {
-            case .normal:
-                updateQueue.async {
-                    if let currentBomb = self.currentBomb {
-                        self.setPosition(of: currentBomb, for: result, camera: camera)
-                    } else {
-                        self.currentBomb = self.newBomb()
-                        self.setPosition(of: self.currentBomb!, for: result, camera: camera)
-                        self.sceneView.scene.rootNode.addChildNode(self.currentBomb!)
-                    }
-                }
-            case .notAvailable, .limited(_):
-                self.currentBomb?.removeFromParentNode()
+        
+        badReadingsCounter -= 1
+        guard badReadingsCounter <= 0 else {return}
+        
+        updateQueue.async {
+            if let currentBomb = self.currentBomb {
+                self.setPosition(of: currentBomb, for: result, camera: camera)
+            } else {
+                self.currentBomb = self.newBomb()
+                self.setPosition(of: self.currentBomb!, for: result, camera: camera)
+                self.sceneView.scene.rootNode.addChildNode(self.currentBomb!)
+            }
         }
         
     }
@@ -158,8 +170,7 @@ extension ARViewController {
         // - : Set3DPosition
     private func setPosition(of node:SCNNode, for raycastResult: ARRaycastResult, camera: ARCamera?) {
         let position = raycastResult.worldTransform.translation
-            // FIXME: Move to average of recent positions to avoid jitter.
-        node.simdPosition = position
+        node.runAction(SCNAction.move(to: SCNVector3(position.x, position.y, position.z), duration: 0.1))
     }
     
     
@@ -261,9 +272,9 @@ extension ARViewController: ARSCNViewDelegate {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        updateQueue.async {
-            self.currentBomb?.simdPosition = anchor.transform.translation
-        }
+//        updateQueue.async {
+//            self.currentBomb?.simdPosition = anchor.transform.translation
+//        }
     }
 }
 
