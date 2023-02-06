@@ -13,11 +13,11 @@
 		8C9B0AF22987246800B92763 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0AF02987246800B92763 /* Main.storyboard */; };
 		8C9B0AF42987246A00B92763 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0AF32987246A00B92763 /* Assets.xcassets */; };
 		8C9B0AF72987246A00B92763 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C9B0AF52987246A00B92763 /* LaunchScreen.storyboard */; };
+		8CFC770D2991885400743C56 /* WickAndFire.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC770C2991885400743C56 /* WickAndFire.mp3 */; };
+		8CFC770F29918E4100743C56 /* SpaceshipEngine.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8CFC770E29918E4100743C56 /* SpaceshipEngine.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8C536EB6298EBAD7003B7E4E /* SpaceshipEngine.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpaceshipEngine.m4a; sourceTree = "<group>"; };
-		8C536EB7298EBAD7003B7E4E /* WickAndFire.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = WickAndFire.m4a; sourceTree = "<group>"; };
 		8C9B0AE72987246800B92763 /* MeuPrimeiroARGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeuPrimeiroARGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C9B0AEA2987246800B92763 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8C9B0AEC2987246800B92763 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -25,6 +25,8 @@
 		8C9B0AF12987246800B92763 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8C9B0AF32987246A00B92763 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C9B0AF62987246A00B92763 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8CFC770C2991885400743C56 /* WickAndFire.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = WickAndFire.mp3; sourceTree = "<group>"; };
+		8CFC770E29918E4100743C56 /* SpaceshipEngine.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SpaceshipEngine.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,8 +43,8 @@
 		8C536EB5298EBABB003B7E4E /* SoundEffects */ = {
 			isa = PBXGroup;
 			children = (
-				8C536EB6298EBAD7003B7E4E /* SpaceshipEngine.m4a */,
-				8C536EB7298EBAD7003B7E4E /* WickAndFire.m4a */,
+				8CFC770E29918E4100743C56 /* SpaceshipEngine.mp3 */,
+				8CFC770C2991885400743C56 /* WickAndFire.mp3 */,
 			);
 			path = SoundEffects;
 			sourceTree = "<group>";
@@ -136,8 +138,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C9B0AED2987246800B92763 /* art.scnassets in Resources */,
+				8CFC770F29918E4100743C56 /* SpaceshipEngine.mp3 in Resources */,
 				8C9B0AF72987246A00B92763 /* LaunchScreen.storyboard in Resources */,
 				8C9B0AF42987246A00B92763 /* Assets.xcassets in Resources */,
+				8CFC770D2991885400743C56 /* WickAndFire.mp3 in Resources */,
 				8C9B0AF22987246800B92763 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
