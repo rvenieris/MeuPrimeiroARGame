@@ -9,11 +9,16 @@ import UIKit
 import SceneKit
 import ARKit
 
+
+class BitMasks { // must be pot 2
+    static let none   = 0
+    static let bomb   = 2
+    static let ovni   = 4
+    static let player = 8
+}
+
 class ARViewController: UIViewController {
-    
-    static let bombCategoryBitMask = 1 >> 1
-    static let ovniCategoryBitMask = 1 >> 2
-    
+
     @IBOutlet var sceneView: ARSCNView!
     
         // Create a new empty scene
@@ -22,13 +27,30 @@ class ARViewController: UIViewController {
         // a queue to run object updates
     let updateQueue = DispatchQueue(label: "com.example.game.SceneKitQueue")
     
+    var playerBody:SCNNode = {
+        let shape     = SCNCapsule(capRadius: 0.5, height: 2)
+        let bodyShape = SCNPhysicsShape(geometry: shape)
+        let body      = SCNPhysicsBody(type: .static, shape: bodyShape)
+        let node      = SCNNode(geometry: shape)
+        node.name = "player"
+        node.physicsBody = body
+        node.physicsBody?.type = .static
+        node.physicsBody?.categoryBitMask = BitMasks.player
+        node.physicsBody?.contactTestBitMask = BitMasks.ovni
+        
+        node.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+        return node
+    }()
+    
         // The Ovni where we can create other Ovnis coping this one
     var masterOvni:SCNNode = {
         let node = SCNScene(named: "art.scnassets/GameElements.scn")!
             .rootNode.childNode(withName: "ovni", recursively:true)!.clone()
-        node.physicsBody?.physicsShape = node.mergeAllChildrenPhysicsShape()
+//        node.physicsBody?.physicsShape = node.mergeAllChildrenPhysicsShape()
+        node.physicsBody?.categoryBitMask = BitMasks.ovni
         node.physicsBody?.isAffectedByGravity = false
         node.position = .init(0, 0, 0)
+        print("Bitmasks", BitMasks.player, BitMasks.ovni)
         return node
     }()
     
@@ -89,6 +111,14 @@ class ARViewController: UIViewController {
         return audioSource
     }()
     
+    var hitLight:SCNLight {
+        let hitLight = SCNLight()
+        hitLight.type = .omni
+        hitLight.color = UIColor.red
+        hitLight.intensity = 10000
+        return hitLight
+    }
+
 
 
     
@@ -103,7 +133,7 @@ extension ARViewController {
         
             // Set the delegates
         sceneView.delegate = self
-//        scene.physicsWorld.contactDelegate = self
+        scene.physicsWorld.contactDelegate = self
         
             // Set the scene to the view
         sceneView.scene = scene
@@ -168,6 +198,7 @@ extension ARViewController {
         super.viewDidAppear(animated)
             // Prevent the screen from being dimmed to avoid interuppting the AR experience.
         UIApplication.shared.isIdleTimerDisabled = true
+        setupOvniAndPlayerContactTest()
         
     }
     
@@ -282,15 +313,11 @@ extension ARViewController {
     var allOvnis:[SCNNode] {self.initialAnchorNode.childNodes.compactMap({ $0.childNode(withName: "ovni", recursively:true) })}
     
     func removeAllOvni(in range:Float, of node:SCNNode) {
-        allOvnis.forEach { ovni in
-            let distance = ovni.distance(to: node)
-            if distance <= range {
-                print("Ovni Abatido", distance)
-                ovni.removeFromParentNode()
-            } else {
-                print("Errou", distance)
-            }
-        }
+        let ovnisInRange = allOvnis.filter({$0.distance(to: node) <= range })
+                                   .sorted(by: {$0.distance(to: node) < $1.distance(to: node)})
+        print("UFO count", allOvnis.count, ovnisInRange.count)
+        runRemoveActions(on: ovnisInRange)
+        
     }
     
     func startInvasion() {
@@ -301,6 +328,16 @@ extension ARViewController {
             })
         }
         
+    }
+    func runRemoveActions(on remainingOvnis: [SCNNode]) {
+        guard let first = remainingOvnis.first else {return}
+        print("Ovni Abatido", first.position)
+        let remainingOvnis = Array(remainingOvnis.dropFirst())
+        first.light = hitLight
+        first.runAction(SCNAction.fadeOpacity(to: 0, duration: 0.2)) {
+            first.runAction(SCNAction.removeFromParentNode())
+            self.runRemoveActions(on: remainingOvnis)
+        }
     }
 }
 
@@ -329,18 +366,19 @@ extension ARViewController {
         let growExplosionBody = SCNAction.scale(to: finalScale, duration: explosionTime)
         let addParticleSystem = SCNAction.run({node in node.addParticleSystem(self.explosion)})
         let shockWave = SCNAction.group([addParticleSystem, growExplosionBody, fadeToZero])
-        
+
+        let hitAliens = SCNAction.run({node in self.removeAllOvni(in: self.bombDamageRange, of: node)})
+
         wick.runAction(SCNAction.sequence([burnWickAction, extinguishFire]))
 
         bomb.runAction(SCNAction.group([wickAndFireAudio,
                                         SCNAction.sequence([
                                             SCNAction.wait(duration: wickBurnTime),
                                             suspenseWait,
-                                            shockWave ])
+                                            shockWave,
+                                            hitAliens])
                                         ]),
-                       completionHandler: {
-            self.removeAllOvni(in: self.bombDamageRange, of: bomb)
-            bomb.runAction(extinguishFire) })
+                       completionHandler: { bomb.runAction(extinguishFire) })
         
     }
     
@@ -364,7 +402,17 @@ extension ARViewController {
     
 }
 
+    // MARK: - Deal Player
+extension ARViewController {
+    
+    func setupOvniAndPlayerContactTest() {
+        guard let pointOfView = sceneView.pointOfView else {return}
+        pointOfView.addChildNode(playerBody)
+    }
+    
+}
 
+    // MARK: - ARSessionDelegate
 extension ARViewController: ARSessionDelegate {
     /*
      Allow the session to attempt to resume after an interruption. This process may not succeed, so the app must be prepared to reset the session if the relocalizing status continues for a long time -- see `escalateFeedback` in `StatusViewController`.
@@ -373,6 +421,7 @@ extension ARViewController: ARSessionDelegate {
     func sessionShouldAttemptRelocalization(_ session: ARSession) -> Bool { return true }
 }
 
+    // MARK: - ARSCNViewDelegate
 extension ARViewController: ARSCNViewDelegate {
     
         // MARK: - ARSCNViewDelegate
@@ -381,20 +430,22 @@ extension ARViewController: ARSCNViewDelegate {
     }
 }
 
-
     // MARK: - SCNPhysicsContactDelegate
-//extension ARViewController: SCNPhysicsContactDelegate {
-//
-//    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-//        let pos = initialAnchorNode.position
-//        let parent = initialAnchorNode.parent
-//        initialAnchorNode.removeFromParentNode()
-//        initialAnchorNode = masterOvni.clone()
-//        parent?.addChildNode(initialAnchorNode)
-//        guard let ovni = [contact.nodeA, contact.nodeB].filter({$0.name == "ovni"}).first else {return}
-//    }
-//
-//}
+extension ARViewController: SCNPhysicsContactDelegate {
+
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        let nodes = [contact.nodeA, contact.nodeB]
+        guard let player = nodes.filter({$0.name == "player"}).first,
+              let ovni = nodes.filter({$0.name == "ovni"}).first,
+              nodes.contains(player) else {return}
+        
+        print("O OVNI te abduziu em", ovni.position.x, ovni.position.z)
+    }
+
+}
+
+
+
 
 
 
